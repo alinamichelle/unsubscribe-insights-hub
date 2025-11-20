@@ -64,6 +64,21 @@ export interface DashboardFilters {
   timeToUnsubBucket?: string;
 }
 
+export interface EmailCampaignPerformance {
+  subject: string;
+  emailType: 'mass' | 'manual' | 'auto';
+  totalSent: number;
+  totalOpened: number;
+  totalUnsubs: number;
+  unsubRate: number;
+  openRate: number;
+  firstSent: string;
+  lastSent: string;
+  unsubEvents: UnsubEvent[];
+  agentBreakdown: { agentId: string; agentName: string; count: number }[];
+  pipelineBreakdown: { pipeline: string; count: number }[];
+}
+
 export interface UnsubEvent extends Event {
   lead: Lead;
   agent: Agent;
