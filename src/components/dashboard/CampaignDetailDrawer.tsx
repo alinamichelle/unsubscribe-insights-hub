@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { EmailCampaignPerformance, UnsubEvent } from "@/types/dashboard";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Mail, TrendingDown, TrendingUp, AlertCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface CampaignDetailDrawerProps {
   campaign: EmailCampaignPerformance | null;
@@ -42,53 +43,69 @@ export const CampaignDetailDrawer = ({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[600px] sm:max-w-[600px] overflow-y-auto">
-        <SheetHeader>
-          <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <Mail className="h-5 w-5 text-primary" />
+      <SheetContent className="w-[600px] sm:max-w-[600px] overflow-y-auto bg-background/95 backdrop-blur-xl border-l border-border/50">
+        <SheetHeader className="space-y-4 pb-6">
+          <div className="flex items-start gap-4">
+            <div className="p-3 rounded-xl bg-primary/10 ring-1 ring-primary/20">
+              <Mail className="h-6 w-6 text-primary" />
             </div>
-            <div className="flex-1">
-              <SheetTitle className="text-lg">{campaign.subject}</SheetTitle>
-              <SheetDescription className="mt-1">
-                <Badge variant={campaign.emailType === 'mass' ? 'default' : campaign.emailType === 'manual' ? 'secondary' : 'outline'}>
+            <div className="flex-1 min-w-0">
+              <SheetTitle className="text-xl font-bold tracking-tight mb-2">{campaign.subject}</SheetTitle>
+              <div className="flex items-center gap-2">
+                <Badge 
+                  variant={campaign.emailType === 'mass' ? 'default' : campaign.emailType === 'manual' ? 'secondary' : 'outline'}
+                  className="font-medium"
+                >
                   {campaign.emailType}
                 </Badge>
-              </SheetDescription>
+                <span className="text-sm text-muted-foreground">
+                  {campaign.totalSent.toLocaleString()} recipients
+                </span>
+              </div>
             </div>
           </div>
         </SheetHeader>
 
-        <div className="mt-6 space-y-6">
+        <div className="space-y-8">
           {/* Campaign Overview */}
           <div>
-            <h3 className="text-sm font-semibold mb-3">Campaign Overview</h3>
-            <div className="grid grid-cols-2 gap-3">
-              <Card className="p-3">
-                <p className="text-xs text-muted-foreground">Total Sent</p>
-                <p className="text-2xl font-bold">{campaign.totalSent.toLocaleString()}</p>
+            <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Performance Metrics</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <Card className="p-4 border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+                <p className="text-xs font-medium text-muted-foreground mb-2">Total Sent</p>
+                <p className="text-3xl font-bold tabular-nums">{campaign.totalSent.toLocaleString()}</p>
               </Card>
-              <Card className="p-3">
-                <p className="text-xs text-muted-foreground">Total Opens</p>
-                <p className="text-2xl font-bold">{campaign.totalOpened.toLocaleString()}</p>
+              <Card className="p-4 border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+                <p className="text-xs font-medium text-muted-foreground mb-2">Total Opens</p>
+                <p className="text-3xl font-bold tabular-nums">{campaign.totalOpened.toLocaleString()}</p>
               </Card>
-              <Card className="p-3">
-                <p className="text-xs text-muted-foreground">Total Unsubs</p>
-                <p className="text-2xl font-bold text-critical">{campaign.totalUnsubs}</p>
+              <Card className="p-4 border-destructive/20 bg-destructive/5 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+                <p className="text-xs font-medium text-destructive mb-2">Total Unsubs</p>
+                <p className="text-3xl font-bold text-destructive tabular-nums">{campaign.totalUnsubs}</p>
               </Card>
-              <Card className="p-3">
-                <p className="text-xs text-muted-foreground">Unsub Rate</p>
-                <p className={`text-2xl font-bold ${campaign.unsubRate < 2 ? 'text-success' : campaign.unsubRate < 4 ? 'text-warning' : 'text-critical'}`}>
+              <Card className={cn(
+                "p-4 backdrop-blur-sm hover:shadow-lg transition-all duration-300",
+                campaign.unsubRate < 2 
+                  ? "border-success/20 bg-success/5" 
+                  : campaign.unsubRate < 4 
+                  ? "border-warning/20 bg-warning/5" 
+                  : "border-destructive/20 bg-destructive/5"
+              )}>
+                <p className="text-xs font-medium text-muted-foreground mb-2">Unsub Rate</p>
+                <p className={cn(
+                  "text-3xl font-bold tabular-nums",
+                  campaign.unsubRate < 2 ? 'text-success' : campaign.unsubRate < 4 ? 'text-warning' : 'text-destructive'
+                )}>
                   {campaign.unsubRate.toFixed(1)}%
                 </p>
               </Card>
-              <Card className="p-3">
-                <p className="text-xs text-muted-foreground">Open Rate</p>
-                <p className="text-2xl font-bold">{campaign.openRate.toFixed(1)}%</p>
+              <Card className="p-4 border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+                <p className="text-xs font-medium text-muted-foreground mb-2">Open Rate</p>
+                <p className="text-3xl font-bold tabular-nums">{campaign.openRate.toFixed(1)}%</p>
               </Card>
-              <Card className="p-3">
-                <p className="text-xs text-muted-foreground">Days Active</p>
-                <p className="text-2xl font-bold">{daysActive}</p>
+              <Card className="p-4 border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+                <p className="text-xs font-medium text-muted-foreground mb-2">Days Active</p>
+                <p className="text-3xl font-bold tabular-nums">{daysActive}</p>
               </Card>
             </div>
           </div>
@@ -97,14 +114,26 @@ export const CampaignDetailDrawer = ({
 
           {/* Engagement Insights */}
           <div>
-            <h3 className="text-sm font-semibold mb-3">Engagement Insights</h3>
+            <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Key Insights</h3>
             <div className="space-y-3">
-              <Card className="p-3 border-l-4 border-l-warning">
-                <div className="flex items-start gap-2">
-                  {isAboveAverage ? <TrendingUp className="h-4 w-4 text-warning mt-0.5" /> : <TrendingDown className="h-4 w-4 text-success mt-0.5" />}
-                  <div>
-                    <p className="text-sm font-medium">Comparison to Account Average</p>
-                    <p className="text-xs text-muted-foreground mt-1">
+              <Card className={cn(
+                "p-4 border-l-4 backdrop-blur-sm transition-all duration-300 hover:shadow-lg",
+                isAboveAverage ? "border-l-warning bg-warning/5" : "border-l-success bg-success/5"
+              )}>
+                <div className="flex items-start gap-3">
+                  <div className={cn(
+                    "p-2 rounded-lg",
+                    isAboveAverage ? "bg-warning/10" : "bg-success/10"
+                  )}>
+                    {isAboveAverage ? (
+                      <TrendingUp className="h-4 w-4 text-warning" />
+                    ) : (
+                      <TrendingDown className="h-4 w-4 text-success" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold mb-1">Comparison to Account Average</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                       {isAboveAverage 
                         ? `${Math.abs(comparisonToAvg).toFixed(1)}% higher than team average (${avgUnsubRate.toFixed(1)}%)`
                         : `${Math.abs(comparisonToAvg).toFixed(1)}% lower than team average (${avgUnsubRate.toFixed(1)}%)`
@@ -114,12 +143,14 @@ export const CampaignDetailDrawer = ({
                 </div>
               </Card>
 
-              <Card className="p-3 border-l-4 border-l-critical">
-                <div className="flex items-start gap-2">
-                  <AlertCircle className="h-4 w-4 text-critical mt-0.5" />
-                  <div>
-                    <p className="text-sm font-medium">Highest Risk Segment</p>
-                    <p className="text-xs text-muted-foreground mt-1">
+              <Card className="p-4 border-l-4 border-l-destructive bg-destructive/5 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 rounded-lg bg-destructive/10">
+                    <AlertCircle className="h-4 w-4 text-destructive" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold mb-1">Highest Risk Segment</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                       {highestRiskSegment.pipeline} leads ({highestRiskSegment.count} unsubs)
                     </p>
                   </div>
@@ -168,26 +199,38 @@ export const CampaignDetailDrawer = ({
 
           {/* Unsubscribers List */}
           <div>
-            <h3 className="text-sm font-semibold mb-3">Unsubscribers ({campaign.unsubEvents.length})</h3>
+            <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">
+              Unsubscribers ({campaign.unsubEvents.length})
+            </h3>
             <div className="space-y-2">
               {campaign.unsubEvents.map((event) => (
                 <Card 
                   key={event.id}
-                  className="p-3 cursor-pointer hover:bg-muted/50 transition-colors"
+                  className="group p-4 cursor-pointer border-border/50 bg-card/30 backdrop-blur-sm hover:bg-muted/50 hover:shadow-md hover:border-primary/30 transition-all duration-200"
                   onClick={() => onLeadClick(event)}
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-sm">{event.lead.full_name}</p>
-                      <p className="text-xs text-muted-foreground">{event.lead.email}</p>
-                      <div className="flex gap-2 mt-1">
-                        <Badge variant="outline" className="text-xs">{event.agent.name}</Badge>
-                        <Badge variant="outline" className="text-xs">{event.lead.pipeline}</Badge>
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-sm mb-1 group-hover:text-primary transition-colors truncate">
+                        {event.lead.full_name}
+                      </p>
+                      <p className="text-xs text-muted-foreground mb-2 truncate">{event.lead.email}</p>
+                      <div className="flex gap-2 flex-wrap">
+                        <Badge variant="outline" className="text-xs font-medium border-border/50">
+                          {event.agent.name}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs font-medium border-border/50">
+                          {event.lead.pipeline}
+                        </Badge>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(event.occurred_at).toLocaleDateString()}
+                    <div className="text-right shrink-0">
+                      <p className="text-xs text-muted-foreground tabular-nums">
+                        {new Date(event.occurred_at).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: '2-digit'
+                        })}
                       </p>
                     </div>
                   </div>
