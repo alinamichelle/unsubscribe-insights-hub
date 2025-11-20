@@ -2,123 +2,156 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* Premium Design System - Linear + Vercel + Dub.co inspired
+All colors MUST be HSL. Spacing scale: 4, 8, 12, 16, 20, 24, 32, 48px
 */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    /* Base colors - Ultra clean Linear style */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 0 0% 9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --popover-foreground: 0 0% 9%;
 
+    /* Primary - Vercel blue */
     --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
+    --primary-subtle: 221 83% 97%;
 
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
+    /* Secondary - Muted tones */
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
 
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    /* Muted - Subtle backgrounds */
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    /* Accent - Highlight color */
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 9%;
 
+    /* Status colors - Pastel premium palette */
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
+    --success-subtle: 142 76% 97%;
 
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
+    --warning-subtle: 38 92% 97%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
+    --destructive-subtle: 0 84% 97%;
 
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+    --info-subtle: 199 89% 97%;
+
+    /* Borders - Ultra subtle */
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
     --ring: 221 83% 53%;
 
     --radius: 0.75rem;
 
+    /* Chart colors - Pastel premium */
     --chart-1: 221 83% 53%;
-    --chart-2: 142 76% 36%;
-    --chart-3: 38 92% 50%;
-    --chart-4: 271 81% 56%;
-    --chart-5: 0 84% 60%;
-    --chart-6: 198 93% 48%;
+    --chart-2: 142 76% 45%;
+    --chart-3: 271 81% 56%;
+    --chart-4: 38 92% 50%;
+    --chart-5: 199 89% 48%;
+    --chart-6: 348 83% 58%;
 
-    /* Premium shadows */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    /* Linear-style soft shadows - rgba for precision */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.04);
+    --shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.04), 0 0 1px 0 rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 6px 12px 0 rgba(0, 0, 0, 0.05), 0 0 1px 0 rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 12px 24px 0 rgba(0, 0, 0, 0.06), 0 0 1px 0 rgba(0, 0, 0, 0.06);
+    --shadow-xl: 0 24px 48px 0 rgba(0, 0, 0, 0.08), 0 0 1px 0 rgba(0, 0, 0, 0.08);
     
-    /* Vercel-style glow effects */
-    --glow-primary: 0 0 20px hsl(var(--primary) / 0.15);
-    --glow-success: 0 0 20px hsl(var(--success) / 0.15);
-    --glow-warning: 0 0 20px hsl(var(--warning) / 0.15);
-    --glow-destructive: 0 0 20px hsl(var(--destructive) / 0.15);
+    /* Vercel-style subtle glows */
+    --glow-primary: 0 0 24px hsl(var(--primary) / 0.12);
+    --glow-success: 0 0 24px hsl(var(--success) / 0.12);
+    --glow-warning: 0 0 24px hsl(var(--warning) / 0.12);
+    --glow-destructive: 0 0 24px hsl(var(--destructive) / 0.12);
+
+    /* Spacing scale */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 24px;
+    --spacing-2xl: 32px;
+    --spacing-3xl: 48px;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
+    --background: 0 0% 4%;
     --foreground: 0 0% 98%;
 
-    --card: 240 10% 7%;
+    --card: 0 0% 7%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 240 10% 7%;
+    --popover: 0 0% 7%;
     --popover-foreground: 0 0% 98%;
 
     --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
+    --primary-subtle: 221 83% 12%;
 
-    --secondary: 240 3.7% 15.9%;
+    --secondary: 0 0% 10%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 55%;
 
-    --accent: 240 3.7% 15.9%;
+    --accent: 0 0% 10%;
     --accent-foreground: 0 0% 98%;
 
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
+    --success-subtle: 142 76% 12%;
 
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
+    --warning-subtle: 38 92% 12%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
+    --destructive-subtle: 0 84% 12%;
 
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+    --info-subtle: 199 89% 12%;
+
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
     --ring: 221 83% 53%;
 
     --chart-1: 221 83% 53%;
-    --chart-2: 142 76% 36%;
-    --chart-3: 38 92% 50%;
-    --chart-4: 271 81% 56%;
-    --chart-5: 0 84% 60%;
-    --chart-6: 198 93% 48%;
+    --chart-2: 142 76% 45%;
+    --chart-3: 271 81% 56%;
+    --chart-4: 38 92% 50%;
+    --chart-5: 199 89% 48%;
+    --chart-6: 348 83% 58%;
 
-    /* Premium shadows for dark mode */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.6);
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+    --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+    --shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 0 1px 0 rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 6px 12px 0 rgba(0, 0, 0, 0.6), 0 0 1px 0 rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 12px 24px 0 rgba(0, 0, 0, 0.7), 0 0 1px 0 rgba(0, 0, 0, 0.7);
+    --shadow-xl: 0 24px 48px 0 rgba(0, 0, 0, 0.8), 0 0 1px 0 rgba(0, 0, 0, 0.8);
     
-    /* Vercel-style glow effects for dark mode */
-    --glow-primary: 0 0 30px hsl(var(--primary) / 0.3);
-    --glow-success: 0 0 30px hsl(var(--success) / 0.3);
-    --glow-warning: 0 0 30px hsl(var(--warning) / 0.3);
-    --glow-destructive: 0 0 30px hsl(var(--destructive) / 0.3);
+    --glow-primary: 0 0 32px hsl(var(--primary) / 0.25);
+    --glow-success: 0 0 32px hsl(var(--success) / 0.25);
+    --glow-warning: 0 0 32px hsl(var(--warning) / 0.25);
+    --glow-destructive: 0 0 32px hsl(var(--destructive) / 0.25);
   }
 }
 
@@ -128,14 +161,18 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1, "ss02" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.011em;
   }
 
-  /* Premium scrollbars */
+  /* Ultra-minimal scrollbars - Linear style */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
@@ -143,54 +180,78 @@ All colors MUST be HSL.
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-border rounded-full;
+    @apply bg-border/60 rounded-full;
+    transition: background-color 0.2s ease;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground/30;
+    @apply bg-border;
+  }
+
+  /* Better number rendering */
+  .tabular-nums {
+    font-feature-settings: "tnum" 1;
+    font-variant-numeric: tabular-nums;
   }
 }
 
 @layer utilities {
-  /* Linear-style animations */
+  /* Vercel-style smooth animations */
   .animate-slide-in-right {
-    animation: slide-in-right 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: slide-in-right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .animate-slide-out-right {
-    animation: slide-out-right 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: slide-out-right 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .animate-fade-in {
-    animation: fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .animate-scale-in {
-    animation: scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   @keyframes slide-in-right {
     from {
       transform: translateX(100%);
+      opacity: 0;
     }
     to {
       transform: translateX(0);
+      opacity: 1;
     }
   }
 
   @keyframes slide-out-right {
     from {
       transform: translateX(0);
+      opacity: 1;
     }
     to {
       transform: translateX(100%);
+      opacity: 0;
     }
   }
 
   @keyframes fade-in {
     from {
       opacity: 0;
-      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
     }
     to {
       opacity: 1;
@@ -209,13 +270,29 @@ All colors MUST be HSL.
     }
   }
 
-  /* Premium hover states */
+  /* Linear-style hover lift */
   .hover-lift {
     @apply transition-all duration-200;
   }
 
   .hover-lift:hover {
     @apply -translate-y-0.5;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Premium card surface */
+  .surface {
+    @apply bg-card rounded-xl border border-border/50;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .surface-hover {
+    @apply surface transition-all duration-200;
+  }
+
+  .surface-hover:hover {
+    box-shadow: var(--shadow-md);
+    @apply border-border;
   }
 
   /* Vercel-style gradient text */
@@ -224,13 +301,25 @@ All colors MUST be HSL.
     background-image: linear-gradient(to right, hsl(var(--primary)), hsl(var(--chart-2)));
   }
 
-  /* Linear-style card */
-  .card-premium {
-    @apply bg-card border-border/50 backdrop-blur-sm;
+  /* Smooth focus rings - Dub.co style */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0;
+    transition: box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Smooth focus rings */
-  .focus-ring {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  /* Number animation container */
+  .animate-number {
+    @apply tabular-nums;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Soft section divider */
+  .soft-divider {
+    @apply border-t border-border/30;
+  }
+
+  /* Chart container */
+  .chart-container {
+    @apply surface p-6 lg:p-8;
   }
 }
