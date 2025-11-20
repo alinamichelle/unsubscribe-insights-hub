@@ -6,10 +6,11 @@ import { UnsubsByAgentChart } from "@/components/dashboard/UnsubsByAgentChart";
 import { UnsubsBySourceChart } from "@/components/dashboard/UnsubsBySourceChart";
 import { PipelineStageChart } from "@/components/dashboard/PipelineStageChart";
 import { TimeToUnsubChart } from "@/components/dashboard/TimeToUnsubChart";
-import { DetailTable } from "@/components/dashboard/DetailTable";
+import { EmailPerformanceTable } from "@/components/dashboard/EmailPerformanceTable";
+import { CampaignDetailDrawer } from "@/components/dashboard/CampaignDetailDrawer";
 import { LeadDetailDrawer } from "@/components/dashboard/LeadDetailDrawer";
 import { InsightsPanel } from "@/components/dashboard/InsightsPanel";
-import { DashboardFilters, UnsubEvent } from "@/types/dashboard";
+import { DashboardFilters, UnsubEvent, EmailCampaignPerformance } from "@/types/dashboard";
 import { mockAgents, mockUnsubEvents } from "@/data/mockData";
 import { TrendingUp, Users, Mail, Clock, Eye, AlertCircle } from "lucide-react";
 
@@ -23,8 +24,10 @@ const Dashboard = () => {
     emailType: 'all',
   });
 
+  const [selectedCampaign, setSelectedCampaign] = useState<EmailCampaignPerformance | null>(null);
+  const [campaignDrawerOpen, setCampaignDrawerOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<UnsubEvent | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [leadDrawerOpen, setLeadDrawerOpen] = useState(false);
 
   // Filter data based on current filters
   const filteredEvents = useMemo(() => {
@@ -129,9 +132,87 @@ const Dashboard = () => {
     return Object.entries(buckets).map(([bucket, count]) => ({ bucket, count }));
   }, [filteredEvents]);
 
-  const handleRowClick = (event: UnsubEvent) => {
+  // Email Performance Data
+  const emailPerformanceData = useMemo(() => {
+    const grouped = filteredEvents.reduce((acc, event) => {
+      const subject = event.metadata.email_subject;
+      if (!acc[subject]) {
+        acc[subject] = {
+          subject,
+          emailType: event.metadata.email_type,
+          totalSent: 0,
+          totalOpened: 0,
+          totalUnsubs: 0,
+          firstSent: event.occurred_at,
+          lastSent: event.occurred_at,
+          unsubEvents: [],
+        };
+      }
+      
+      acc[subject].totalUnsubs++;
+      acc[subject].unsubEvents.push(event);
+      acc[subject].totalSent += event.emailsSentBefore;
+      acc[subject].totalOpened += event.emailsOpenedBefore;
+      
+      if (new Date(event.occurred_at) < new Date(acc[subject].firstSent)) {
+        acc[subject].firstSent = event.occurred_at;
+      }
+      if (new Date(event.occurred_at) > new Date(acc[subject].lastSent)) {
+        acc[subject].lastSent = event.occurred_at;
+      }
+      
+      return acc;
+    }, {} as Record<string, any>);
+
+    return Object.values(grouped).map((campaign: any) => {
+      const agentBreakdown = campaign.unsubEvents.reduce((acc: any, event: UnsubEvent) => {
+        const existing = acc.find((a: any) => a.agentId === event.agent_id);
+        if (existing) {
+          existing.count++;
+        } else {
+          acc.push({ agentId: event.agent_id, agentName: event.agent.name, count: 1 });
+        }
+        return acc;
+      }, []);
+
+      const pipelineBreakdown = campaign.unsubEvents.reduce((acc: any, event: UnsubEvent) => {
+        const existing = acc.find((p: any) => p.pipeline === event.lead.pipeline);
+        if (existing) {
+          existing.count++;
+        } else {
+          acc.push({ pipeline: event.lead.pipeline, count: 1 });
+        }
+        return acc;
+      }, []);
+
+      return {
+        ...campaign,
+        unsubRate: (campaign.totalUnsubs / campaign.totalSent) * 100,
+        openRate: (campaign.totalOpened / campaign.totalSent) * 100,
+        agentBreakdown: agentBreakdown.sort((a: any, b: any) => b.count - a.count),
+        pipelineBreakdown: pipelineBreakdown.sort((a: any, b: any) => b.count - a.count),
+      } as EmailCampaignPerformance;
+    }).sort((a, b) => b.totalUnsubs - a.totalUnsubs);
+  }, [filteredEvents]);
+
+  const topPerformers = useMemo(() => {
+    if (emailPerformanceData.length === 0) return { worst: null, mostEngaging: null, highestReach: null };
+    
+    const worst = [...emailPerformanceData].sort((a, b) => b.unsubRate - a.unsubRate)[0];
+    const mostEngaging = [...emailPerformanceData].sort((a, b) => b.openRate - a.openRate)[0];
+    const highestReach = [...emailPerformanceData].sort((a, b) => b.totalSent - a.totalSent)[0];
+    
+    return { worst, mostEngaging, highestReach };
+  }, [emailPerformanceData]);
+
+  const handleCampaignClick = (campaign: EmailCampaignPerformance) => {
+    setSelectedCampaign(campaign);
+    setCampaignDrawerOpen(true);
+  };
+
+  const handleLeadClickFromCampaign = (event: UnsubEvent) => {
     setSelectedEvent(event);
-    setDrawerOpen(true);
+    setLeadDrawerOpen(true);
   };
 
   const handleAgentFilter = (agentId: string) => {
@@ -230,23 +311,51 @@ const Dashboard = () => {
           <InsightsPanel />
         </div>
 
-        {/* Detail Table */}
+        {/* Email Performance Summary */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-4 rounded-lg border bg-critical/5 border-critical/20">
+            <p className="text-sm text-muted-foreground">Worst Performing Email</p>
+            <p className="font-semibold text-sm mt-1 truncate">{topPerformers.worst?.subject || 'N/A'}</p>
+            <p className="text-xs text-critical mt-1">{topPerformers.worst?.unsubRate.toFixed(1)}% unsub rate</p>
+          </div>
+          <div className="p-4 rounded-lg border bg-success/5 border-success/20">
+            <p className="text-sm text-muted-foreground">Most Engaging Email</p>
+            <p className="font-semibold text-sm mt-1 truncate">{topPerformers.mostEngaging?.subject || 'N/A'}</p>
+            <p className="text-xs text-success mt-1">{topPerformers.mostEngaging?.openRate.toFixed(1)}% open rate</p>
+          </div>
+          <div className="p-4 rounded-lg border bg-primary/5 border-primary/20">
+            <p className="text-sm text-muted-foreground">Highest Reach Email</p>
+            <p className="font-semibold text-sm mt-1 truncate">{topPerformers.highestReach?.subject || 'N/A'}</p>
+            <p className="text-xs text-primary mt-1">{topPerformers.highestReach?.totalSent.toLocaleString()} sent</p>
+          </div>
+        </div>
+
+        {/* Email Performance Table */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Unsubscribe Details</h2>
+            <h2 className="text-xl font-semibold">Email Campaign Performance</h2>
             <p className="text-sm text-muted-foreground">
-              Showing {filteredEvents.length} events • Click any row for details
+              {emailPerformanceData.length} campaigns • Click any row to view details
             </p>
           </div>
-          <DetailTable data={filteredEvents} onRowClick={handleRowClick} />
+          <EmailPerformanceTable data={emailPerformanceData} onRowClick={handleCampaignClick} />
         </div>
       </div>
+
+      {/* Campaign Detail Drawer */}
+      <CampaignDetailDrawer
+        campaign={selectedCampaign}
+        open={campaignDrawerOpen}
+        onOpenChange={setCampaignDrawerOpen}
+        onLeadClick={handleLeadClickFromCampaign}
+        avgUnsubRate={unsubRate}
+      />
 
       {/* Lead Detail Drawer */}
       <LeadDetailDrawer 
         event={selectedEvent}
-        open={drawerOpen}
-        onOpenChange={setDrawerOpen}
+        open={leadDrawerOpen}
+        onOpenChange={setLeadDrawerOpen}
       />
     </div>
   );
