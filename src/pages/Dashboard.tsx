@@ -10,6 +10,7 @@ import { EmailPerformanceTable } from "@/components/dashboard/EmailPerformanceTa
 import { CampaignDetailDrawer } from "@/components/dashboard/CampaignDetailDrawer";
 import { LeadDetailDrawer } from "@/components/dashboard/LeadDetailDrawer";
 import { InsightsPanel } from "@/components/dashboard/InsightsPanel";
+import { SummaryCards } from "@/components/dashboard/SummaryCards";
 import { DashboardFilters, UnsubEvent, EmailCampaignPerformance } from "@/types/dashboard";
 import { mockAgents, mockUnsubEvents } from "@/data/mockData";
 import { TrendingUp, Users, Mail, Clock, Eye, AlertCircle } from "lucide-react";
