@@ -127,15 +127,30 @@ export function PortalHero({ userTier, referralCount = 0, raffleTickets = 0 }: P
                   </div>
                 ))}
               </div>
-              <div className="mt-6">
-                <button className="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-sm font-medium hover:bg-slate-800 transition-all">
-                  View Full Report
-                </button>
-              </div>
             </>
           )}
         </div>
       </div>
+
+      {/* Floating Chat-Style Report Button */}
+      {userTier === "homeowner" && (
+        <button className="fixed bottom-6 right-6 z-50 group">
+          <div className="flex items-center gap-3 bg-white rounded-full shadow-lg border border-slate-200/60 pr-5 pl-2 py-2 hover:shadow-xl transition-all hover:scale-105">
+            <div className="relative">
+              <img 
+                src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop" 
+                alt="Your Agent" 
+                className="w-12 h-12 rounded-full object-cover border-2 border-white"
+              />
+              <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white"></div>
+            </div>
+            <div className="text-left">
+              <div className="text-sm font-medium text-slate-900">View HausReport</div>
+              <div className="text-xs text-slate-500">Your latest insights ready</div>
+            </div>
+          </div>
+        </button>
+      )}
     </div>
   );
 }
