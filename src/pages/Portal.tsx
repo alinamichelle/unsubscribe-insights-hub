@@ -13,6 +13,7 @@ import { HausKeeping } from "@/components/portal/HausKeeping";
 import { ExploreAustin } from "@/components/portal/ExploreAustin";
 import { HausCodex } from "@/components/portal/HausCodex";
 import { ReferralDrawer } from "@/components/portal/ReferralDrawer";
+import { RealtorReferralDrawer } from "@/components/portal/RealtorReferralDrawer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 
@@ -23,19 +24,31 @@ export default function Portal() {
   const [referralCount] = useState(3); // Mock - would come from backend
   const [raffleTickets] = useState(15); // Mock - calculated from referrals
   const [isReferralDrawerOpen, setIsReferralDrawerOpen] = useState(false);
+  const [isRealtorReferralDrawerOpen, setIsRealtorReferralDrawerOpen] = useState(false);
 
   return (
     <AppShell pageTitle="HausPortal" userRole="agent">
       <div className="p-6 lg:p-10 space-y-8 max-w-[1360px] mx-auto">
-        {/* Floating Refer Button */}
-        <Button
-          onClick={() => setIsReferralDrawerOpen(true)}
-          className="fixed bottom-6 right-6 lg:bottom-8 lg:right-8 h-14 px-6 rounded-full shadow-lg hover:shadow-xl transition-all z-30"
-          size="lg"
-        >
-          <Users className="w-5 h-5 mr-2" />
-          Refer Someone
-        </Button>
+        {/* Floating Action Buttons */}
+        <div className="fixed bottom-6 right-6 lg:bottom-8 lg:right-8 flex flex-col gap-3 z-30">
+          <Button
+            onClick={() => setIsReferralDrawerOpen(true)}
+            className="h-14 px-6 rounded-full shadow-lg hover:shadow-xl transition-all"
+            size="lg"
+          >
+            <Users className="w-5 h-5 mr-2" />
+            Refer Someone
+          </Button>
+          <Button
+            onClick={() => setIsRealtorReferralDrawerOpen(true)}
+            variant="secondary"
+            className="h-14 px-6 rounded-full shadow-lg hover:shadow-xl transition-all"
+            size="lg"
+          >
+            <Users className="w-5 h-5 mr-2" />
+            Need a Realtor?
+          </Button>
+        </div>
 
         {/* Hero Section */}
         <PortalHero 
@@ -48,6 +61,12 @@ export default function Portal() {
         <ReferralDrawer
           isOpen={isReferralDrawerOpen}
           onClose={() => setIsReferralDrawerOpen(false)}
+        />
+
+        {/* Realtor Referral Drawer */}
+        <RealtorReferralDrawer
+          isOpen={isRealtorReferralDrawerOpen}
+          onClose={() => setIsRealtorReferralDrawerOpen(false)}
         />
 
         {/* Main Content Tabs */}
