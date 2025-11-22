@@ -11,6 +11,7 @@ import { DocumentVault } from "@/components/portal/DocumentVault";
 import { AgentDirectory } from "@/components/portal/AgentDirectory";
 import { HausKeeping } from "@/components/portal/HausKeeping";
 import { ExploreAustin } from "@/components/portal/ExploreAustin";
+import { HausCodex } from "@/components/portal/HausCodex";
 import { ReferralDrawer } from "@/components/portal/ReferralDrawer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -72,6 +73,9 @@ export default function Portal() {
             <TabsTrigger value="explore" className="rounded-lg data-[state=active]:bg-slate-100">
               Explore
             </TabsTrigger>
+            <TabsTrigger value="codex" className="rounded-lg data-[state=active]:bg-slate-100">
+              Codex
+            </TabsTrigger>
             <TabsTrigger value="community" className="rounded-lg data-[state=active]:bg-slate-100">
               Community
             </TabsTrigger>
@@ -120,6 +124,11 @@ export default function Portal() {
           {/* Explore Tab */}
           <TabsContent value="explore">
             <ExploreAustin />
+          </TabsContent>
+
+          {/* Codex Tab */}
+          <TabsContent value="codex">
+            <HausCodex />
           </TabsContent>
 
           {/* Community Tab */}
