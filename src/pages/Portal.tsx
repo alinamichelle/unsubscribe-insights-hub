@@ -29,11 +29,18 @@ export default function Portal() {
   return (
     <AppShell pageTitle="HausPortal" userRole="agent">
       <div className="p-6 lg:p-10 space-y-8 max-w-[1360px] mx-auto">
-        {/* Floating Action Buttons */}
-        <div className="fixed bottom-6 right-6 lg:bottom-8 lg:right-8 flex flex-col gap-3 z-30">
+        {/* Hero Section */}
+        <PortalHero 
+          userTier={userTier} 
+          referralCount={referralCount}
+          raffleTickets={raffleTickets}
+        />
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap gap-3">
           <Button
             onClick={() => setIsReferralDrawerOpen(true)}
-            className="h-14 px-6 rounded-full shadow-lg hover:shadow-xl transition-all"
+            className="px-6 rounded-xl"
             size="lg"
           >
             <Users className="w-5 h-5 mr-2" />
@@ -42,20 +49,13 @@ export default function Portal() {
           <Button
             onClick={() => setIsRealtorReferralDrawerOpen(true)}
             variant="secondary"
-            className="h-14 px-6 rounded-full shadow-lg hover:shadow-xl transition-all"
+            className="px-6 rounded-xl"
             size="lg"
           >
             <Users className="w-5 h-5 mr-2" />
             Need a Realtor?
           </Button>
         </div>
-
-        {/* Hero Section */}
-        <PortalHero 
-          userTier={userTier} 
-          referralCount={referralCount}
-          raffleTickets={raffleTickets}
-        />
 
         {/* Referral Drawer */}
         <ReferralDrawer
