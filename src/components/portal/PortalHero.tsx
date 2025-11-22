@@ -145,8 +145,8 @@ export function PortalHero({ userTier, referralCount = 0, raffleTickets = 0 }: P
               <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white"></div>
             </div>
             <div className="text-left">
-              <div className="text-sm font-medium text-slate-900">View HausReport</div>
-              <div className="text-xs text-slate-500">Your latest insights ready</div>
+              <div className="text-sm font-medium text-slate-900">Chat with Anthony</div>
+              <div className="text-xs text-slate-500">I'm here to help anytime</div>
             </div>
           </div>
         </button>
