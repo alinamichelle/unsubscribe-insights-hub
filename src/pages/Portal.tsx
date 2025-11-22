@@ -16,12 +16,18 @@ type UserTier = "contact" | "homeowner" | "transaction" | "community";
 
 export default function Portal() {
   const [userTier] = useState<UserTier>("homeowner"); // Mock - would come from auth
+  const [referralCount] = useState(3); // Mock - would come from backend
+  const [raffleTickets] = useState(15); // Mock - calculated from referrals
 
   return (
     <AppShell pageTitle="HausPortal" userRole="agent">
       <div className="p-6 lg:p-10 space-y-8 max-w-[1360px] mx-auto">
         {/* Hero Section */}
-        <PortalHero userTier={userTier} />
+        <PortalHero 
+          userTier={userTier} 
+          referralCount={referralCount}
+          raffleTickets={raffleTickets}
+        />
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="home" className="space-y-8">

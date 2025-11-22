@@ -1,21 +1,25 @@
-import { Home, TrendingUp, FileText, Users, Calendar } from "lucide-react";
+import { Home, TrendingUp, FileText, Users, Calendar, Ticket } from "lucide-react";
 import clientPhoto from "@/assets/client-hausiversary.jpg";
 
 type UserTier = "contact" | "homeowner" | "transaction" | "community";
 
 interface PortalHeroProps {
   userTier: UserTier;
+  referralCount?: number;
+  raffleTickets?: number;
 }
 
-export function PortalHero({ userTier }: PortalHeroProps) {
+export function PortalHero({ userTier, referralCount = 0, raffleTickets = 0 }: PortalHeroProps) {
+  const isEliteMember = referralCount > 0;
+  
   const getTierInfo = () => {
     switch (userTier) {
       case "homeowner":
         return {
           title: "Welcome back, Sarah",
           subtitle: "Your home has appreciated $45,000 since purchase",
-          badge: "Homeowner Member",
-          badgeColor: "from-emerald-500 to-teal-600",
+          badge: isEliteMember ? "Elite Haus Member" : "Haus Member",
+          badgeColor: isEliteMember ? "from-amber-500 to-orange-600" : "from-emerald-500 to-teal-600",
         };
       case "transaction":
         return {
@@ -70,15 +74,29 @@ export function PortalHero({ userTier }: PortalHeroProps) {
               </div>
               
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2 flex-wrap">
-                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r ${tierInfo.badgeColor}`}>
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r ${tierInfo.badgeColor} shadow-sm`}>
                     {tierInfo.badge}
                   </span>
                   {userTier === "homeowner" && (
-                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700 border border-amber-200">
-                      <Calendar className="h-3 w-3" />
-                      Hausiversary: March 15, 2021
-                    </div>
+                    <>
+                      <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                        <Calendar className="h-3 w-3" />
+                        Hausiversary: March 15, 2021
+                      </div>
+                      {raffleTickets > 0 && (
+                        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700 border border-purple-200">
+                          <Ticket className="h-3 w-3" />
+                          {raffleTickets} Raffle {raffleTickets === 1 ? 'Ticket' : 'Tickets'}
+                        </div>
+                      )}
+                      {isEliteMember && (
+                        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                          <Users className="h-3 w-3" />
+                          {referralCount} {referralCount === 1 ? 'Referral' : 'Referrals'}
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
                 <h1 className="text-3xl lg:text-4xl font-semibold text-slate-900 mb-2">
