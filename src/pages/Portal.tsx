@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Users } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PortalHero } from "@/components/portal/PortalHero";
 import { HausReportCard } from "@/components/portal/HausReportCard";
@@ -10,7 +11,9 @@ import { DocumentVault } from "@/components/portal/DocumentVault";
 import { AgentDirectory } from "@/components/portal/AgentDirectory";
 import { HausKeeping } from "@/components/portal/HausKeeping";
 import { ExploreAustin } from "@/components/portal/ExploreAustin";
+import { ReferralDrawer } from "@/components/portal/ReferralDrawer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 
 type UserTier = "contact" | "homeowner" | "transaction" | "community";
 
@@ -18,15 +21,32 @@ export default function Portal() {
   const [userTier] = useState<UserTier>("homeowner"); // Mock - would come from auth
   const [referralCount] = useState(3); // Mock - would come from backend
   const [raffleTickets] = useState(15); // Mock - calculated from referrals
+  const [isReferralDrawerOpen, setIsReferralDrawerOpen] = useState(false);
 
   return (
     <AppShell pageTitle="HausPortal" userRole="agent">
       <div className="p-6 lg:p-10 space-y-8 max-w-[1360px] mx-auto">
+        {/* Floating Refer Button */}
+        <Button
+          onClick={() => setIsReferralDrawerOpen(true)}
+          className="fixed bottom-6 right-6 lg:bottom-8 lg:right-8 h-14 px-6 rounded-full shadow-lg hover:shadow-xl transition-all z-30"
+          size="lg"
+        >
+          <Users className="w-5 h-5 mr-2" />
+          Refer Someone
+        </Button>
+
         {/* Hero Section */}
         <PortalHero 
           userTier={userTier} 
           referralCount={referralCount}
           raffleTickets={raffleTickets}
+        />
+
+        {/* Referral Drawer */}
+        <ReferralDrawer
+          isOpen={isReferralDrawerOpen}
+          onClose={() => setIsReferralDrawerOpen(false)}
         />
 
         {/* Main Content Tabs */}
