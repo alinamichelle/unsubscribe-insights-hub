@@ -97,6 +97,15 @@ export function AppShell({ children, pageTitle = "Overview", userRole = "leaders
             Leads
           </NavLink>
 
+          <NavLink
+            to="/portal"
+            className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all duration-200"
+            activeClassName="bg-slate-100 text-slate-900"
+          >
+            <Users className="w-4 h-4" />
+            HausPortal
+          </NavLink>
+
           {(userRole === "leadership" || userRole === "admin") && (
             <NavLink
               to="/settings"
