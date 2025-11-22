@@ -8,6 +8,8 @@ import { ReferralTracker } from "@/components/portal/ReferralTracker";
 import { RewardsDashboard } from "@/components/portal/RewardsDashboard";
 import { DocumentVault } from "@/components/portal/DocumentVault";
 import { AgentDirectory } from "@/components/portal/AgentDirectory";
+import { HausKeeping } from "@/components/portal/HausKeeping";
+import { ExploreAustin } from "@/components/portal/ExploreAustin";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type UserTier = "contact" | "homeowner" | "transaction" | "community";
@@ -37,6 +39,12 @@ export default function Portal() {
             </TabsTrigger>
             <TabsTrigger value="referrals" className="rounded-lg data-[state=active]:bg-slate-100">
               Referrals
+            </TabsTrigger>
+            <TabsTrigger value="hauskeeping" className="rounded-lg data-[state=active]:bg-slate-100">
+              HausKeeping
+            </TabsTrigger>
+            <TabsTrigger value="explore" className="rounded-lg data-[state=active]:bg-slate-100">
+              Explore
             </TabsTrigger>
             <TabsTrigger value="community" className="rounded-lg data-[state=active]:bg-slate-100">
               Community
@@ -76,6 +84,16 @@ export default function Portal() {
           {/* Referrals Tab */}
           <TabsContent value="referrals">
             <ReferralTracker />
+          </TabsContent>
+
+          {/* HausKeeping Tab */}
+          <TabsContent value="hauskeeping">
+            <HausKeeping />
+          </TabsContent>
+
+          {/* Explore Tab */}
+          <TabsContent value="explore">
+            <ExploreAustin />
           </TabsContent>
 
           {/* Community Tab */}
