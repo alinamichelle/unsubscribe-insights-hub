@@ -1,4 +1,5 @@
-import { Home, TrendingUp, FileText, Users } from "lucide-react";
+import { Home, TrendingUp, FileText, Users, Calendar } from "lucide-react";
+import clientPhoto from "@/assets/client-hausiversary.jpg";
 
 type UserTier = "contact" | "homeowner" | "transaction" | "community";
 
@@ -57,21 +58,38 @@ export function PortalHero({ userTier }: PortalHeroProps) {
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50 to-blue-50/30 pointer-events-none" />
         
         <div className="relative">
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r ${tierInfo.badgeColor}`}>
-                  {tierInfo.badge}
-                </span>
+          <div className="flex items-start justify-between gap-6 mb-6">
+            <div className="flex items-start gap-4 flex-1">
+              {/* Avatar */}
+              <div className="relative flex-shrink-0">
+                <img 
+                  src={clientPhoto} 
+                  alt="Client with Realtor"
+                  className="w-20 h-20 lg:w-24 lg:h-24 rounded-2xl object-cover border-2 border-white shadow-lg"
+                />
               </div>
-              <h1 className="text-3xl lg:text-4xl font-semibold text-slate-900 mb-2">
-                {tierInfo.title}
-              </h1>
-              <p className="text-base text-slate-600">{tierInfo.subtitle}</p>
+              
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2 flex-wrap">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r ${tierInfo.badgeColor}`}>
+                    {tierInfo.badge}
+                  </span>
+                  {userTier === "homeowner" && (
+                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700 border border-amber-200">
+                      <Calendar className="h-3 w-3" />
+                      Hausiversary: March 15, 2021
+                    </div>
+                  )}
+                </div>
+                <h1 className="text-3xl lg:text-4xl font-semibold text-slate-900 mb-2">
+                  {tierInfo.title}
+                </h1>
+                <p className="text-base text-slate-600">{tierInfo.subtitle}</p>
+              </div>
             </div>
             
             {/* Logo */}
-            <div className="hidden lg:block">
+            <div className="hidden lg:block flex-shrink-0">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600" />
             </div>
           </div>
