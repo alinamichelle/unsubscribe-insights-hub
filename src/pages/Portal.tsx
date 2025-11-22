@@ -110,8 +110,6 @@ export default function Portal() {
 
               {/* Right Column - Quick Access */}
               <div className="space-y-6">
-                {userTier === "homeowner" && <HausReportCard compact />}
-                <RewardsDashboard compact />
                 <AgentDirectory compact />
               </div>
             </div>
