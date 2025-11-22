@@ -8,7 +8,7 @@ import { EventCalendar } from "@/components/portal/EventCalendar";
 import { ReferralTracker } from "@/components/portal/ReferralTracker";
 import { RewardsDashboard } from "@/components/portal/RewardsDashboard";
 import { DocumentVault } from "@/components/portal/DocumentVault";
-import { AgentDirectory } from "@/components/portal/AgentDirectory";
+import { AgentSocialFeed } from "@/components/portal/AgentSocialFeed";
 import { HausKeeping } from "@/components/portal/HausKeeping";
 import { ExploreAustin } from "@/components/portal/ExploreAustin";
 import { HausCodex } from "@/components/portal/HausCodex";
@@ -108,9 +108,9 @@ export default function Portal() {
                 <NewsFeed />
               </div>
 
-              {/* Right Column - Quick Access */}
+              {/* Right Column - Social Feed */}
               <div className="space-y-6">
-                <AgentDirectory compact />
+                <AgentSocialFeed />
               </div>
             </div>
           </TabsContent>
