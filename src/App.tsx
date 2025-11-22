@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import Overview from "./pages/Overview";
 import Portal from "./pages/Portal";
 import Login from "./pages/Login";
+import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/overview" element={<Overview />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/portal" element={<Portal />} />
+          <Route path="/install" element={<Install />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
