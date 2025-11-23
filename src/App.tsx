@@ -9,6 +9,7 @@ import Overview from "./pages/Overview";
 import Portal from "./pages/Portal";
 import Login from "./pages/Login";
 import Install from "./pages/Install";
+import Onboarding from "./pages/Onboarding";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/overview" element={<Overview />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/portal" element={<Portal />} />
