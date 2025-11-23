@@ -3,6 +3,8 @@ import { Navigate } from "react-router-dom";
 import Screen1Welcome from "@/components/onboarding/Screen1Welcome";
 import Screen2Upload from "@/components/onboarding/Screen2Upload";
 import Screen3HealthReport from "@/components/onboarding/Screen3HealthReport";
+import Screen3bLicenseInput from "@/components/onboarding/Screen3bLicenseInput";
+import Screen3cMLSHistory from "@/components/onboarding/Screen3cMLSHistory";
 import Screen4IntakeQuestions from "@/components/onboarding/Screen4IntakeQuestions";
 import Screen5FieldMapping from "@/components/onboarding/Screen5FieldMapping";
 import Screen6Summary from "@/components/onboarding/Screen6Summary";
@@ -10,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 
 export interface OnboardingData {
   uploadedFile?: File;
+  licenseNumber?: string;
   goals?: string[];
   leadProcess?: string;
   leadJourney?: string;
@@ -25,8 +28,9 @@ const Onboarding = () => {
   const [currentScreen, setCurrentScreen] = useState(1);
   const [data, setData] = useState<OnboardingData>({});
   const [isComplete, setIsComplete] = useState(false);
+  const [showMLSHistory, setShowMLSHistory] = useState(false);
 
-  const totalScreens = 6;
+  const totalScreens = 8; // Updated to include license input and MLS history screens
   const progress = (currentScreen / totalScreens) * 100;
 
   const updateData = (newData: Partial<OnboardingData>) => {
@@ -39,6 +43,18 @@ const Onboarding = () => {
       window.scrollTo(0, 0);
     } else {
       setIsComplete(true);
+    }
+  };
+
+  const handleLicenseSubmit = (licenseNumber?: string) => {
+    if (licenseNumber) {
+      setShowMLSHistory(true);
+      nextScreen();
+    } else {
+      // Skip MLS history, go to intake questions (screen 6)
+      setShowMLSHistory(false);
+      setCurrentScreen(6);
+      window.scrollTo(0, 0);
     }
   };
 
@@ -85,6 +101,19 @@ const Onboarding = () => {
           />
         )}
         {currentScreen === 4 && (
+          <Screen3bLicenseInput 
+            onNext={handleLicenseSubmit} 
+            onBack={prevScreen}
+            onDataChange={updateData}
+          />
+        )}
+        {currentScreen === 5 && showMLSHistory && (
+          <Screen3cMLSHistory 
+            onNext={nextScreen} 
+            onBack={prevScreen}
+          />
+        )}
+        {currentScreen === 6 && (
           <Screen4IntakeQuestions 
             onNext={nextScreen} 
             onBack={prevScreen}
@@ -92,7 +121,7 @@ const Onboarding = () => {
             data={data}
           />
         )}
-        {currentScreen === 5 && (
+        {currentScreen === 7 && (
           <Screen5FieldMapping 
             onNext={nextScreen} 
             onBack={prevScreen}
@@ -100,7 +129,7 @@ const Onboarding = () => {
             data={data}
           />
         )}
-        {currentScreen === 6 && (
+        {currentScreen === 8 && (
           <Screen6Summary 
             onNext={nextScreen} 
             onBack={prevScreen}
