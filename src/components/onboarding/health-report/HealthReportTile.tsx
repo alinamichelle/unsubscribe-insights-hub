@@ -7,7 +7,7 @@ import { ChevronRight } from "lucide-react";
 interface HealthReportTileProps {
   title: string;
   score: string;
-  type: "donut" | "tags" | "line" | "bar" | "bubble" | "pulse";
+  type: "donut" | "tags" | "line" | "bar" | "bubble" | "pulse" | "repeat" | "referral";
   data: any;
   insight: string;
 }
@@ -104,6 +104,31 @@ const HealthReportTile = ({ title, score, type, data, insight }: HealthReportTil
             </div>
           </div>
         );
+      case "repeat":
+        return (
+          <div className="space-y-3">
+            <div className="relative h-3 bg-muted rounded-full overflow-hidden">
+              <div className="absolute h-full bg-primary/60 rounded-full" style={{ width: "6%" }} />
+            </div>
+            <div className="relative h-3 bg-muted rounded-full overflow-hidden">
+              <div className="absolute h-full bg-primary/30 rounded-full" style={{ width: "17%" }} />
+            </div>
+          </div>
+        );
+      case "referral":
+        return (
+          <div className="relative h-24 flex items-center justify-center gap-2">
+            <div className="w-14 h-14 rounded-full bg-primary/30 flex items-center justify-center">
+              <span className="text-xs font-medium">49</span>
+            </div>
+            <div className="w-8 h-8 rounded-full bg-primary/50 flex items-center justify-center">
+              <span className="text-xs font-medium">17</span>
+            </div>
+            <div className="w-11 h-11 rounded-full bg-primary/20 flex items-center justify-center">
+              <span className="text-xs font-medium">26</span>
+            </div>
+          </div>
+        );
       default:
         return null;
     }
@@ -170,6 +195,29 @@ const HealthReportTile = ({ title, score, type, data, insight }: HealthReportTil
               <p className="text-sm">• {data.total} past clients</p>
               <p className="text-sm">• {data.stale} haven't been contacted in 12+ months</p>
               <p className="text-sm">• {data.recentlyActive} recently active on your website</p>
+            </div>
+          </div>
+        );
+      case "repeat":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <p className="text-sm">• {data.totalPastClients} past clients in database</p>
+              <p className="text-sm">• {data.staleContacts} haven't been contacted in 12+ months</p>
+              <p className="text-sm">• Only {data.repeatTransactions} repeat transactions</p>
+              <p className="text-sm">• Historical average time-to-sell in your market: {data.avgTimeToSell}</p>
+              <p className="text-sm">• {data.dueBuyers} buyers purchased 6+ years ago</p>
+              <p className="text-sm">• None show documented outreach or follow-up patterns</p>
+            </div>
+          </div>
+        );
+      case "referral":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <p className="text-sm">• {data.referralLikely} past clients show "referral-likely behavior" (birthday, tax season, school transitions, major moves)</p>
+              <p className="text-sm">• {data.recentWebVisits} clients recently viewed your website, but no contact was logged</p>
+              <p className="text-sm">• {data.strongSocialTies} clients have strong social ties (shared employers, neighborhood, groups)</p>
             </div>
           </div>
         );
