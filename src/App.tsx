@@ -10,6 +10,7 @@ import Portal from "./pages/Portal";
 import Login from "./pages/Login";
 import Install from "./pages/Install";
 import Onboarding from "./pages/Onboarding";
+import AgentIntake from "./pages/AgentIntake";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/portal" element={<Portal />} />
           <Route path="/install" element={<Install />} />
+          <Route path="/intake" element={<AgentIntake />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
