@@ -25,7 +25,7 @@ const Screen3HealthReport = ({ onNext, onBack }: Screen3HealthReportProps) => {
         </div>
 
         {/* Health Report Tiles */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <HealthReportTile
             title="Contact Quality"
             score="62%"
@@ -99,6 +99,33 @@ const Screen3HealthReport = ({ onNext, onBack }: Screen3HealthReportProps) => {
             }}
             insight="Reconnecting with past clients strengthens referrals and loyalty."
           />
+          
+          <HealthReportTile
+            title="Repeat Business Pattern"
+            score="Low"
+            type="repeat"
+            data={{
+              totalPastClients: 198,
+              staleContacts: 72,
+              repeatTransactions: 11,
+              avgTimeToSell: "5–7 years",
+              dueBuyers: 34,
+              noOutreach: true,
+            }}
+            insight="Based on local transaction timelines, several past clients may be due for market updates or annual check-ins. Re-engagement here often leads to referrals or repeat business."
+          />
+          
+          <HealthReportTile
+            title="Missed Referral Opportunities"
+            score="49 Signals"
+            type="referral"
+            data={{
+              referralLikely: 49,
+              recentWebVisits: 17,
+              strongSocialTies: 26,
+            }}
+            insight="Referral patterns tend to follow major life events and high-trust relationships. A rhythm of simple, value-oriented check-ins often activates these connections."
+          />
         </div>
 
         {/* Opportunity Highlights */}
@@ -120,6 +147,14 @@ const Screen3HealthReport = ({ onNext, onBack }: Screen3HealthReportProps) => {
             <OpportunityHighlight
               title="Your renters segment shows unusual long-term engagement."
               detail="This often signals the potential for renter → buyer transition campaigns."
+            />
+            <OpportunityHighlight
+              title="34 past buyers purchased 6+ years ago — statistically entering listing window."
+              detail="In many markets, the average owner sells within 5–7 years. Some of these contacts may be thinking about a move but haven't reached out yet."
+            />
+            <OpportunityHighlight
+              title="A segment of past clients shows high referral likelihood."
+              detail="These clients show referral-likely behavior patterns including birthday milestones, tax season activity, school transitions, and major moves. They also have strong social ties through shared employers, neighborhoods, or groups."
             />
           </div>
         </div>
