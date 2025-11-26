@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Install from "./pages/Install";
 import Onboarding from "./pages/Onboarding";
 import AgentIntake from "./pages/AgentIntake";
+import Today from "./pages/Today";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/portal" element={<Portal />} />
           <Route path="/install" element={<Install />} />
           <Route path="/intake" element={<AgentIntake />} />
+          <Route path="/today" element={<Today />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
