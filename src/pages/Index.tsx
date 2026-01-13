@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { BarChart3, TrendingDown, Users, Mail } from "lucide-react";
+import { BarChart3, TrendingDown, Users, Mail, BookOpen } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -21,9 +21,15 @@ const Index = () => {
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
             Monitor email performance & list health with comprehensive analytics for your real estate team
           </p>
-          <Button size="lg" onClick={() => navigate('/dashboard')} className="text-lg px-8">
-            Open Dashboard
-          </Button>
+          <div className="flex items-center justify-center gap-4 flex-wrap">
+            <Button size="lg" onClick={() => navigate('/dashboard')} className="text-lg px-8">
+              Open Dashboard
+            </Button>
+            <Button size="lg" variant="outline" onClick={() => navigate('/kb')} className="text-lg px-8">
+              <BookOpen className="mr-2 h-5 w-5" />
+              Knowledge Base
+            </Button>
+          </div>
         </div>
 
         {/* Features Grid */}
