@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { Search, Bell, ChevronDown, LayoutDashboard, TrendingDown, Mail, Users, Settings } from "lucide-react";
+import { Search, Bell, ChevronDown, LayoutDashboard, TrendingDown, Mail, Users, Settings, BookOpen } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -104,6 +104,15 @@ export function AppShell({ children, pageTitle = "Overview", userRole = "leaders
           >
             <Users className="w-4 h-4" />
             HausPortal
+          </NavLink>
+
+          <NavLink
+            to="/kb"
+            className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all duration-200"
+            activeClassName="bg-slate-100 text-slate-900"
+          >
+            <BookOpen className="w-4 h-4" />
+            Knowledge Base
           </NavLink>
 
           {(userRole === "leadership" || userRole === "admin") && (
