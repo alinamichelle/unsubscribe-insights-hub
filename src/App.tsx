@@ -12,6 +12,7 @@ import Install from "./pages/Install";
 import Onboarding from "./pages/Onboarding";
 import AgentIntake from "./pages/AgentIntake";
 import Today from "./pages/Today";
+import KnowledgeBase from "./pages/KnowledgeBase";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/install" element={<Install />} />
           <Route path="/intake" element={<AgentIntake />} />
           <Route path="/today" element={<Today />} />
+          <Route path="/kb" element={<KnowledgeBase />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
