@@ -13,6 +13,7 @@ import Onboarding from "./pages/Onboarding";
 import AgentIntake from "./pages/AgentIntake";
 import Today from "./pages/Today";
 import KnowledgeBase from "./pages/KnowledgeBase";
+import Leads from "./pages/Leads";
 import NotFound from "./pages/NotFound";
 import { KBLayout } from "./components/kb/KBLayout";
 import { KBIndexView } from "./components/kb/KBIndexView";
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/install" element={<Install />} />
           <Route path="/intake" element={<AgentIntake />} />
           <Route path="/today" element={<Today />} />
+          <Route path="/leads" element={<Leads />} />
           <Route path="/kb" element={<KnowledgeBase />} />
           {/* New nested KB routes */}
           <Route path="/app/kb" element={<KBLayout />}>
