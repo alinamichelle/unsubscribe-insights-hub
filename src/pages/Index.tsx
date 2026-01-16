@@ -25,7 +25,7 @@ const Index = () => {
             <Button size="lg" onClick={() => navigate('/dashboard')} className="text-lg px-8">
               Open Dashboard
             </Button>
-            <Button size="lg" variant="outline" onClick={() => navigate('/kb')} className="text-lg px-8">
+            <Button size="lg" variant="outline" onClick={() => navigate('/app/kb')} className="text-lg px-8">
               <BookOpen className="mr-2 h-5 w-5" />
               Knowledge Base
             </Button>

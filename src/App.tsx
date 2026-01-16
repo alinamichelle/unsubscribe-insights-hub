@@ -14,6 +14,10 @@ import AgentIntake from "./pages/AgentIntake";
 import Today from "./pages/Today";
 import KnowledgeBase from "./pages/KnowledgeBase";
 import NotFound from "./pages/NotFound";
+import { KBLayout } from "./components/kb/KBLayout";
+import { KBIndexView } from "./components/kb/KBIndexView";
+import { KBArticleViewRoute } from "./components/kb/KBArticleViewRoute";
+import { KBEditorRoute } from "./components/kb/KBEditorRoute";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +38,13 @@ const App = () => (
           <Route path="/intake" element={<AgentIntake />} />
           <Route path="/today" element={<Today />} />
           <Route path="/kb" element={<KnowledgeBase />} />
+          {/* New nested KB routes */}
+          <Route path="/app/kb" element={<KBLayout />}>
+            <Route index element={<KBIndexView />} />
+            <Route path=":slug" element={<KBArticleViewRoute />} />
+            <Route path=":slug/edit" element={<KBEditorRoute />} />
+            <Route path="new" element={<KBEditorRoute />} />
+          </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
