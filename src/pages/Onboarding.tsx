@@ -71,18 +71,8 @@ const Onboarding = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Progress Bar */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-        <div className="container mx-auto px-4 py-4">
-          <Progress value={progress} className="h-1" />
-          <p className="text-xs text-muted-foreground mt-2">
-            Step {currentScreen} of {totalScreens}
-          </p>
-        </div>
-      </div>
-
       {/* Main Content */}
-      <div className="pt-24 pb-16">
+      <div className="pb-16">
         {currentScreen === 1 && (
           <Screen1Welcome onNext={nextScreen} />
         )}

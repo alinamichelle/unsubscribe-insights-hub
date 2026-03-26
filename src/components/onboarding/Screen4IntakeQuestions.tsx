@@ -1,13 +1,6 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, ArrowLeft, HelpCircle } from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { OnboardingData } from "@/pages/Onboarding";
-import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface Screen4IntakeQuestionsProps {
   onNext: () => void;
@@ -16,352 +9,366 @@ interface Screen4IntakeQuestionsProps {
   data: OnboardingData;
 }
 
-const Screen4IntakeQuestions = ({ onNext, onBack, onDataChange, data }: Screen4IntakeQuestionsProps) => {
-  const [currentQuestion, setCurrentQuestion] = useState(1);
-  const totalQuestions = 6;
+interface QuestionDef {
+  stem: string;
+  unitLabel?: string;
+  chips: string[];
+}
 
-  const [goals, setGoals] = useState<string[]>(data.goals || []);
-  const [leadProcess, setLeadProcess] = useState(data.leadProcess || "");
-  const [leadJourney, setLeadJourney] = useState(data.leadJourney || "");
-  const [leadSources, setLeadSources] = useState<string[]>(data.leadSources || []);
-  const [hasGrowthTargets, setHasGrowthTargets] = useState(data.hasGrowthTargets ?? false);
-  const [growthTarget, setGrowthTarget] = useState(data.growthTarget || "");
-  const [previousSystems, setPreviousSystems] = useState<string[]>(data.previousSystems || []);
-  const [systemFeedback, setSystemFeedback] = useState(data.systemFeedback || "");
+interface QuestionSignal {
+  firstTyped: string;
+  finalAnswer: string;
+  chipSelected: string;
+  timeOnQuestion: number;
+  skipped: boolean;
+}
+
+const questions: QuestionDef[] = [
+  {
+    stem: "Last year I closed",
+    unitLabel: "deals",
+    chips: ["under 10", "10–20", "21–35", "36–50", "50+"],
+  },
+  {
+    stem: "Most of my business comes from",
+    chips: [
+      "referrals and sphere",
+      "paid portals like Zillow",
+      "my own marketing",
+      "my brokerage or team",
+      "honestly a mix of everything",
+    ],
+  },
+  {
+    stem: "The part that costs me the most deals is",
+    chips: [
+      "not following up fast enough",
+      "leads going cold before I convert",
+      "losing past clients to other agents",
+      "not knowing who to call today",
+      "doing everything manually",
+    ],
+  },
+  {
+    stem: "Right now I run my business out of",
+    chips: [
+      "a CRM I barely use",
+      "spreadsheets and my phone",
+      "Follow Up Boss or Lofty",
+      "notes and memory",
+      "nothing consistent",
+    ],
+  },
+  {
+    stem: "This year I'd consider myself winning if I",
+    chips: [
+      "hit a specific production number",
+      "stopped losing deals to poor follow-up",
+      "built something that runs without me chasing it",
+      "actually used my database",
+      "had a morning that didn't feel like chaos",
+    ],
+  },
+];
+
+const Screen4IntakeQuestions = ({
+  onNext,
+  onBack,
+  onDataChange,
+}: Screen4IntakeQuestionsProps) => {
+  const [currentQ, setCurrentQ] = useState(0);
+  const [answers, setAnswers] = useState<string[]>(Array(5).fill(""));
+  const [selectedChips, setSelectedChips] = useState<(string | null)[]>(
+    Array(5).fill(null)
+  );
+  const [signals, setSignals] = useState<QuestionSignal[]>(
+    questions.map(() => ({
+      firstTyped: "",
+      finalAnswer: "",
+      chipSelected: "",
+      timeOnQuestion: 0,
+      skipped: false,
+    }))
+  );
+  const [direction, setDirection] = useState(1);
+  const questionStartTime = useRef(Date.now());
+  const hasTypedFirst = useRef<boolean[]>(Array(5).fill(false));
+
+  useEffect(() => {
+    questionStartTime.current = Date.now();
+  }, [currentQ]);
+
+  const captureTime = useCallback(() => {
+    const elapsed = (Date.now() - questionStartTime.current) / 1000;
+    setSignals((prev) => {
+      const copy = [...prev];
+      copy[currentQ] = { ...copy[currentQ], timeOnQuestion: elapsed };
+      return copy;
+    });
+    return elapsed;
+  }, [currentQ]);
+
+  const handleChipSelect = (chip: string) => {
+    const newAnswers = [...answers];
+    newAnswers[currentQ] = chip;
+    setAnswers(newAnswers);
+
+    const newChips = [...selectedChips];
+    newChips[currentQ] = chip;
+    setSelectedChips(newChips);
+
+    setSignals((prev) => {
+      const copy = [...prev];
+      copy[currentQ] = { ...copy[currentQ], chipSelected: chip, finalAnswer: chip };
+      return copy;
+    });
+  };
+
+  const handleInputChange = (val: string) => {
+    const newAnswers = [...answers];
+    newAnswers[currentQ] = val;
+    setAnswers(newAnswers);
+
+    const newChips = [...selectedChips];
+    newChips[currentQ] = null;
+    setSelectedChips(newChips);
+
+    if (!hasTypedFirst.current[currentQ] && val.length > 0) {
+      hasTypedFirst.current[currentQ] = true;
+      setSignals((prev) => {
+        const copy = [...prev];
+        copy[currentQ] = { ...copy[currentQ], firstTyped: val };
+        return copy;
+      });
+    }
+
+    setSignals((prev) => {
+      const copy = [...prev];
+      copy[currentQ] = { ...copy[currentQ], finalAnswer: val };
+      return copy;
+    });
+  };
 
   const handleNext = () => {
-    if (currentQuestion < totalQuestions) {
-      setCurrentQuestion(prev => prev + 1);
+    captureTime();
+    if (currentQ < questions.length - 1) {
+      setDirection(1);
+      setCurrentQ((p) => p + 1);
     } else {
+      // Map answers to OnboardingData fields
+      const finalSignals = signals.map((s, i) => ({
+        ...s,
+        finalAnswer: answers[i],
+        skipped: !answers[i],
+      }));
       onDataChange({
-        goals,
-        leadProcess,
-        leadJourney,
-        leadSources,
-        hasGrowthTargets,
-        growthTarget,
-        previousSystems,
-        systemFeedback,
+        growthTarget: answers[0],
+        leadSources: answers[1] ? [answers[1]] : [],
+        goals: answers[2] ? [answers[2]] : [],
+        previousSystems: answers[3] ? [answers[3]] : [],
+        systemFeedback: answers[4],
+        // @ts-ignore — signals piggyback on data
+        _signals: finalSignals,
       });
       onNext();
     }
   };
 
   const handleBack = () => {
-    if (currentQuestion > 1) {
-      setCurrentQuestion(prev => prev - 1);
+    captureTime();
+    if (currentQ > 0) {
+      setDirection(-1);
+      setCurrentQ((p) => p - 1);
     } else {
       onBack();
     }
   };
 
-  const renderQuestion = () => {
-    switch (currentQuestion) {
-      case 1:
-        return (
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-light">
-                What are you hoping LiteHaus will help you do this year?
-              </h2>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <p className="text-sm text-muted-foreground flex items-center gap-2 cursor-help">
-                      Select all that apply
-                      <HelpCircle className="h-4 w-4" />
-                    </p>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>This shapes the workflow we recommend.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-
-            <div className="space-y-3">
-              {[
-                "Create structure",
-                "Organize follow-up",
-                "Improve consistency",
-                "Understand my database",
-                "Grow production",
-                "Standardize the team",
-                "Reduce busywork",
-                "Other"
-              ].map((goal) => (
-                <div key={goal} className="flex items-center space-x-3">
-                  <Checkbox
-                    id={goal}
-                    checked={goals.includes(goal)}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setGoals([...goals, goal]);
-                      } else {
-                        setGoals(goals.filter(g => g !== goal));
-                      }
-                    }}
-                  />
-                  <Label htmlFor={goal} className="text-base font-normal cursor-pointer">
-                    {goal}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-
-      case 2:
-        return (
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-light">
-                How would you describe your current lead process?
-              </h2>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <p className="text-sm text-muted-foreground flex items-center gap-2 cursor-help">
-                      Choose one
-                      <HelpCircle className="h-4 w-4" />
-                    </p>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>A process is simply the path a person takes from first contact to close.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-
-            <RadioGroup value={leadProcess} onValueChange={setLeadProcess}>
-              {[
-                "We have a defined process",
-                "We have parts of one",
-                "It varies by agent",
-                "We're creating one",
-                "Not sure yet"
-              ].map((option) => (
-                <div key={option} className="flex items-center space-x-3">
-                  <RadioGroupItem value={option} id={option} />
-                  <Label htmlFor={option} className="text-base font-normal cursor-pointer">
-                    {option}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
-        );
-
-      case 3:
-        return (
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-light">
-                How do people usually move from stranger → lead → client today?
-              </h2>
-            </div>
-
-            <RadioGroup value={leadJourney} onValueChange={setLeadJourney}>
-              {[
-                "There's a clear journey",
-                "It's informal",
-                "It depends on lead type",
-                "I'd like help shaping this",
-                "Not certain"
-              ].map((option) => (
-                <div key={option} className="flex items-center space-x-3">
-                  <RadioGroupItem value={option} id={option} />
-                  <Label htmlFor={option} className="text-base font-normal cursor-pointer">
-                    {option}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
-        );
-
-      case 4:
-        return (
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-light">
-                Where do most of your leads originate?
-              </h2>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <p className="text-sm text-muted-foreground flex items-center gap-2 cursor-help">
-                      Select all that apply
-                      <HelpCircle className="h-4 w-4" />
-                    </p>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>This helps us match behavior patterns to your sources.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-
-            <div className="space-y-3">
-              {[
-                "Zillow",
-                "Realtor.com",
-                "Facebook",
-                "Instagram",
-                "Referrals",
-                "Open houses",
-                "Website",
-                "Direct mail",
-                "Sphere of influence",
-                "Other"
-              ].map((source) => (
-                <div key={source} className="flex items-center space-x-3">
-                  <Checkbox
-                    id={source}
-                    checked={leadSources.includes(source)}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setLeadSources([...leadSources, source]);
-                      } else {
-                        setLeadSources(leadSources.filter(s => s !== source));
-                      }
-                    }}
-                  />
-                  <Label htmlFor={source} className="text-base font-normal cursor-pointer">
-                    {source}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-
-      case 5:
-        return (
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-light">
-                Do you have growth targets for the next 12 months?
-              </h2>
-            </div>
-
-            <RadioGroup 
-              value={hasGrowthTargets.toString()} 
-              onValueChange={(val) => setHasGrowthTargets(val === "true")}
-            >
-              <div className="flex items-center space-x-3">
-                <RadioGroupItem value="true" id="yes" />
-                <Label htmlFor="yes" className="text-base font-normal cursor-pointer">
-                  Yes
-                </Label>
-              </div>
-              <div className="flex items-center space-x-3">
-                <RadioGroupItem value="false" id="no" />
-                <Label htmlFor="no" className="text-base font-normal cursor-pointer">
-                  No
-                </Label>
-              </div>
-            </RadioGroup>
-
-            {hasGrowthTargets && (
-              <div className="space-y-2 animate-in slide-in-from-top-2">
-                <Label htmlFor="target">What's your target?</Label>
-                <Input
-                  id="target"
-                  placeholder="e.g., 20 closings, $5M in volume"
-                  value={growthTarget}
-                  onChange={(e) => setGrowthTarget(e.target.value)}
-                />
-                <p className="text-xs text-muted-foreground">
-                  Examples: "20 closings", "Increase nurture conversions"
-                </p>
-              </div>
-            )}
-          </div>
-        );
-
-      case 6:
-        return (
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-light">
-                What systems have you used before?
-              </h2>
-            </div>
-
-            <div className="space-y-3">
-              {[
-                "Lofty",
-                "Follow Up Boss",
-                "Chime",
-                "LionDesk",
-                "KvCore",
-                "Excel/Spreadsheets",
-                "None",
-                "Other"
-              ].map((system) => (
-                <div key={system} className="flex items-center space-x-3">
-                  <Checkbox
-                    id={system}
-                    checked={previousSystems.includes(system)}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setPreviousSystems([...previousSystems, system]);
-                      } else {
-                        setPreviousSystems(previousSystems.filter(s => s !== system));
-                      }
-                    }}
-                  />
-                  <Label htmlFor={system} className="text-base font-normal cursor-pointer">
-                    {system}
-                  </Label>
-                </div>
-              ))}
-            </div>
-
-            {previousSystems.length > 0 && !previousSystems.includes("None") && (
-              <div className="space-y-2 animate-in slide-in-from-top-2">
-                <Label htmlFor="feedback">What did you wish those tools helped you do better?</Label>
-                <Textarea
-                  id="feedback"
-                  placeholder="Share your thoughts..."
-                  value={systemFeedback}
-                  onChange={(e) => setSystemFeedback(e.target.value)}
-                  rows={4}
-                />
-              </div>
-            )}
-          </div>
-        );
-
-      default:
-        return null;
+  const handleSkip = () => {
+    captureTime();
+    setSignals((prev) => {
+      const copy = [...prev];
+      copy[currentQ] = { ...copy[currentQ], skipped: true };
+      return copy;
+    });
+    if (currentQ < questions.length - 1) {
+      setDirection(1);
+      setCurrentQ((p) => p + 1);
+    } else {
+      handleNext();
     }
   };
 
+  const q = questions[currentQ];
+
   return (
-    <div className="container mx-auto px-4 max-w-3xl">
-      <div className="space-y-12">
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            Question {currentQuestion} of {totalQuestions}
-          </p>
-        </div>
+    <div
+      style={{ background: "#0D0C0B" }}
+      className="fixed inset-0 flex items-center justify-center overflow-hidden"
+    >
+      {/* Wordmark */}
+      <div className="fixed top-6 left-6 z-50 flex items-center gap-2">
+        <span
+          style={{ color: "#F15025", fontSize: "8px" }}
+          className="leading-none"
+        >
+          ●
+        </span>
+        <span style={{ color: "#6B6560" }} className="text-sm font-light">
+          Lite<span style={{ color: "#E8E4DF" }} className="font-medium">Haus</span>
+        </span>
+      </div>
 
-        <div className="min-h-[400px]">
-          {renderQuestion()}
-        </div>
+      {/* Dot progress — top right */}
+      <div className="fixed top-7 right-6 z-50 flex items-center gap-1.5">
+        {questions.map((_, i) => (
+          <div
+            key={i}
+            style={{
+              width: i === currentQ ? 16 : 6,
+              height: 6,
+              borderRadius: 3,
+              background: i === currentQ ? "#F15025" : "#1E1A17",
+              transition: "all 0.3s ease",
+            }}
+          />
+        ))}
+      </div>
 
-        <div className="flex justify-between pt-8">
-          <Button variant="ghost" onClick={handleBack}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </Button>
-          <Button onClick={handleNext}>
-            {currentQuestion < totalQuestions ? "Next" : "Continue"}
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
+      {/* Breathing glow */}
+      <motion.div
+        className="absolute pointer-events-none"
+        style={{
+          width: 500,
+          height: 500,
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, rgba(241,80,37,0.07) 0%, transparent 65%)",
+        }}
+        animate={{ opacity: [0.4, 1, 0.4] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* Content */}
+      <div style={{ maxWidth: 520 }} className="relative z-10 w-full px-6">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={currentQ}
+            custom={direction}
+            initial={{ opacity: 0, y: direction * 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: direction * -8 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="flex flex-col items-center text-center"
+          >
+            {/* Question stem + input */}
+            <div
+              className="flex flex-wrap items-baseline justify-center gap-x-2"
+              style={{
+                fontSize: 23,
+                fontWeight: 300,
+                letterSpacing: "-0.01em",
+                color: "#E8E4DF",
+                lineHeight: 1.6,
+              }}
+            >
+              <span>{q.stem}</span>
+              <span className="inline-flex items-baseline gap-2">
+                <input
+                  type="text"
+                  value={answers[currentQ]}
+                  onChange={(e) => handleInputChange(e.target.value)}
+                  placeholder="___"
+                  className="bg-transparent outline-none text-center"
+                  style={{
+                    fontSize: 23,
+                    fontWeight: 300,
+                    color: "#F15025",
+                    borderBottom: "1px solid",
+                    borderColor: answers[currentQ] ? "#F15025" : "#2A2520",
+                    minWidth: 80,
+                    maxWidth: 220,
+                    transition: "border-color 0.2s",
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#F15025";
+                  }}
+                  onBlur={(e) => {
+                    if (!answers[currentQ]) e.target.style.borderColor = "#2A2520";
+                  }}
+                />
+                {q.unitLabel && (
+                  <span style={{ color: "#6B6560" }}>{q.unitLabel}</span>
+                )}
+              </span>
+            </div>
+
+            {/* Chips */}
+            <div className="flex flex-wrap justify-center gap-2 mt-8">
+              {q.chips.map((chip) => {
+                const isSelected = selectedChips[currentQ] === chip;
+                return (
+                  <button
+                    key={chip}
+                    onClick={() => handleChipSelect(chip)}
+                    className="rounded-full transition-all duration-200 cursor-pointer"
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 300,
+                      padding: "6px 14px",
+                      color: isSelected ? "#F15025" : "#4A4540",
+                      border: `1px solid ${
+                        isSelected ? "rgba(241,80,37,0.3)" : "#1E1A17"
+                      }`,
+                      background: isSelected
+                        ? "rgba(241,80,37,0.09)"
+                        : "transparent",
+                    }}
+                  >
+                    {chip}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Skip + Next */}
+            <div className="flex items-center justify-center gap-5 mt-10">
+              <button
+                onClick={handleSkip}
+                className="cursor-pointer transition-opacity duration-200 hover:opacity-70"
+                style={{
+                  fontSize: 13,
+                  color: "#2E2A27",
+                  background: "none",
+                  border: "none",
+                }}
+              >
+                Skip
+              </button>
+              <button
+                onClick={handleNext}
+                className="cursor-pointer transition-all duration-200 hover:opacity-90"
+                style={{
+                  background: "#F15025",
+                  color: "#FFFFFF",
+                  borderRadius: 5,
+                  padding: "11px 32px",
+                  fontSize: 16,
+                  fontWeight: 400,
+                  border: "none",
+                }}
+                onMouseEnter={(e) => {
+                  (e.target as HTMLElement).style.transform = "scale(1.01)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.target as HTMLElement).style.transform = "scale(1)";
+                }}
+              >
+                {currentQ < questions.length - 1 ? "Next" : "Continue"}
+              </button>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );
